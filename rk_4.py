@@ -13,7 +13,7 @@ K2 = 1
 M = 40 / 10000 * (NP - 100000) + 50 
 
 def runge_kutta_iv(t_target):
-    h = 0.01 
+    h = 1 
     steps = int(t_target/h)
 
     t = [0.0 for _ in range(steps + 1)]
@@ -112,8 +112,8 @@ def main():
     print(f"G: {G}")
     print(f"K1: {K1}")
     print(f"máximo teórico: {theorical_peak}")
-    print(f"máximo práctico: {theorical_peak}")
-    print(f"Erorr relativo: {abs(peak/theorical_peak)}")
+    print(f"máximo práctico: {peak}")
+    print(f"Erorr relativo: {abs(peak-theorical_peak)/theorical_peak}")
 
     fig, axs = plt.subplots(3, 1, figsize=(8, 8), sharex=True)
 
