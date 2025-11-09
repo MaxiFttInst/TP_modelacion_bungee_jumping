@@ -12,7 +12,7 @@ K2 = 1
 M = 40 / 10000 * (NP - 100000) + 50 
 
 def runge_kutta_iv(t_target):
-    h = 0.001
+    h = 0.01 
     steps = int(t_target/h)
 
     t = [0.0 for _ in range(steps + 1)]
@@ -40,10 +40,12 @@ def runge_kutta_iv(t_target):
     q3v[0] = h * G
     q4v[0] = h * G
 
+    a = G
     u[1] = u[0] + (q1u[0] + 2*q2u[0] + 2*q3u[0] + q4u[0])/6
-    v_d[0] = (q1v[0] + 2*q2v[0] + 2*q3v[0] + q4v[0])/6
-    v[1] = v[0] + v_d[0] 
+    
+    v[1] = v[0] + (q1v[0] + 2*q2v[0] + 2*q3v[0] + q4v[0])/6
 
+    v_d[1] = a
     t[1] = h
 
     for n in range(1,steps):
@@ -63,6 +65,7 @@ def runge_kutta_iv(t_target):
             q4u[n] = h * (v[n] + q3v[n])
 
             q4v[n] = h * (G - (K1*pow(u[n] + q3u[n] - L0, K2))/M)
+            a = G - (K1 * (u[n] - L0)**K2) / M
         else:
             q1v[n] = h * G
             q2v[n] = h * G
@@ -72,10 +75,12 @@ def runge_kutta_iv(t_target):
             q2u[n] = h * (v[n] + q1v[n]/2)
             q3u[n] = h * (v[n] + q2v[n]/2)
             q4u[n] = h * (v[n] + q3v[n])
+            a = G
 
         u[n + 1] = u[n] + (q1u[n] + 2*q2u[n] + 2*q3u[n] + q4u[n])/6
-        v_d[n] = (q1v[n] + 2*q2v[n] + 2*q3v[n] + q4v[n])/6
-        v[n + 1] = v[n] + v_d[n]
+        v[n + 1] = v[n] + (q1v[n] + 2*q2v[n] + 2*q3v[n] + q4v[n])/6
+
+        v_d[n] = a
         t[n + 1] = t[n] + h
 
     return t, u, v, v_d
@@ -88,7 +93,7 @@ def main():
     time, position, velocity, acceleration = runge_kutta_iv(50)
     ax.plot(time, position, 'b', label='Position')
     ax.plot(time, velocity, 'r--', label='Velocity')
-    ax.plot(time, list(map(lambda x: x* 1000, acceleration)), 'g', label='Acceleration * 10^3')
+    ax.plot(time, acceleration, 'g', label='Acceleration * 10^3')
     ax.legend(['Posición', 'Velocidad', 'Aceleración * 10^3'])
     plt.ylabel('metros')
     plt.show()                           # Show the figure.
