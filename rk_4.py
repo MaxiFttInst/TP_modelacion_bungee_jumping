@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+NP = 111687
+H = 150
+G = 9.82
+L0 = (0.1 / 10000 * (NP - 100000) + 0.25) * H 
+K1 = 10 / 10000 * (NP - 100000) + 40
+K2 = 1
+M = 40 / 10000 * (NP - 100000) + 50 
+
+def runge_kutta_iv(t_target):
+    h = 0.001
+    steps = int(t_target/h)
+
+    t = [0.0 for _ in range(steps + 1)]
+    u = [0.0 for _ in range(steps + 1)]
+    v = [0.0 for _ in range(steps + 1)]
+    v_d = [0.0 for _ in range(steps + 1)]
+
+    q1u = [0.0 for _ in range(steps + 1)]
+    q2u = [0.0 for _ in range(steps + 1)]
+    q3u = [0.0 for _ in range(steps + 1)]
+    q4u = [0.0 for _ in range(steps + 1)]
+
+    q1v = [0.0 for _ in range(steps + 1)]
+    q2v = [0.0 for _ in range(steps + 1)]
+    q3v = [0.0 for _ in range(steps + 1)]
+    q4v = [0.0 for _ in range(steps + 1)]
+
+    q1u[0] = h * v[0]
+    q2u[0] = h * (v[0] + q1v[0]/2)
+    q3u[0] = h * (v[0] + q2v[0]/2)
+    q4u[0] = h * (v[0] + q3v[0])
+
+    q1v[0] = h * G
+    q2v[0] = h * G
+    q3v[0] = h * G
+    q4v[0] = h * G
+
+    u[1] = u[0] + (q1u[0] + 2*q2u[0] + 2*q3u[0] + q4u[0])/6
+    v_d[0] = (q1v[0] + 2*q2v[0] + 2*q3v[0] + q4v[0])/6
+    v[1] = v[0] + v_d[0] 
+
+    t[1] = h
+
+    for n in range(1,steps):
+        if u[n] > L0:
+            q1u[n] = h * v[n]
+
+            q1v[n] = h * (G - (K1*pow(u[n] - L0, K2))/M)
+
+            q2u[n] = h * (v[n] + q1v[n]/2)
+
+            q2v[n] = h * (G - (K1*pow(u[n] + q1u[n]/2 - L0, K2))/M)
+
+            q3u[n] = h * (v[n] + q2v[n]/2)
+
+            q3v[n] = h * (G - (K1*pow(u[n] + q2u[n]/2 - L0, K2))/M)
+
+            q4u[n] = h * (v[n] + q3v[n])
+
+            q4v[n] = h * (G - (K1*pow(u[n] + q3u[n] - L0, K2))/M)
+        else:
+            q1v[n] = h * G
+            q2v[n] = h * G
+            q3v[n] = h * G
+            q4v[n] = h * G
+            q1u[n] = h * v[n]
+            q2u[n] = h * (v[n] + q1v[n]/2)
+            q3u[n] = h * (v[n] + q2v[n]/2)
+            q4u[n] = h * (v[n] + q3v[n])
+
+        u[n + 1] = u[n] + (q1u[n] + 2*q2u[n] + 2*q3u[n] + q4u[n])/6
+        v_d[n] = (q1v[n] + 2*q2v[n] + 2*q3v[n] + q4v[n])/6
+        v[n + 1] = v[n] + v_d[n]
+        t[n + 1] = t[n] + h
+
+    return t, u, v, v_d
+
+            
+def main():
+    fig, ax = plt.subplots()             # Create a figure containing a single Axes.
+
+    print(f"Long soga: {L0}")
+    time, position, velocity, acceleration = runge_kutta_iv(50)
+    ax.plot(time, position, 'b', label='Position')
+    ax.plot(time, velocity, 'r--', label='Velocity')
+    ax.plot(time, list(map(lambda x: x* 1000, acceleration)), 'g', label='Acceleration * 10^3')
+    ax.legend(['Posición', 'Velocidad', 'Aceleración * 10^3'])
+    plt.ylabel('metros')
+    plt.show()                           # Show the figure.
+
+
+if __name__ == "__main__":
+    main()
