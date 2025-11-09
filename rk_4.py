@@ -113,7 +113,7 @@ def main():
     print(f"K1: {K1}")
     print(f"máximo teórico: {theorical_peak}")
     print(f"máximo práctico: {theorical_peak}")
-    print(f"Erorr absoluto: {abs(peak - theorical_peak)}")
+    print(f"Erorr relativo: {abs(peak/theorical_peak)}")
 
     fig, axs = plt.subplots(3, 1, figsize=(8, 8), sharex=True)
 
