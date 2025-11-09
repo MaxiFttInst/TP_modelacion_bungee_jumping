@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.signal import find_peaks
 
 NP = 111687
 H = 150
@@ -97,11 +98,28 @@ def main():
     # plt.show()                           # Show the figure.
     #
     time, position, velocity, acceleration = runge_kutta_iv(50)
-    print(f"Long soga: {L0}")
+    time = np.array(time)
+    position = np.array(position)
+    velocity = np.array(velocity)
+    acceleration = np.array(acceleration)
+    position_peaks, _ = find_peaks(position)
+    peak = position[position_peaks[0]]
+
+    theorical_peak = L0 + (2*M*G)/(2*K1) + np.sqrt((2*M*G*L0)/K1 + ((M*G)/K1)**2)
+    print(f"L0: {L0}")
+    print(f"H: {H}")
+    print(f"M: {M}")
+    print(f"G: {G}")
+    print(f"K1: {K1}")
+    print(f"máximo teórico: {theorical_peak}")
+    print(f"máximo práctico: {theorical_peak}")
+    print(f"Erorr relativo: {abs(peak - theorical_peak)}")
 
     fig, axs = plt.subplots(3, 1, figsize=(8, 8), sharex=True)
 
     axs[0].plot(time, position, 'b', label='Posición [m]')
+    axs[0].scatter(time[position_peaks], position[position_peaks],
+                   color='green', marker='^', label='Picos')
     axs[0].set_ylabel("Posición [m]")
 
     axs[1].plot(time, list(map(lambda x: (x * 3600)/1000,velocity)), 'r--', label='Velocidad [Km/h]')
