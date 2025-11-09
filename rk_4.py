@@ -87,15 +87,30 @@ def runge_kutta_iv(t_target):
 
             
 def main():
-    fig, ax = plt.subplots()             # Create a figure containing a single Axes.
-
-    print(f"Long soga: {L0}")
+    ## TODAS LAS METRICAS USADAS EN METROS
+    # time, position, velocity, acceleration = runge_kutta_iv(50)
+    # ax.plot(time, position, 'b', label='Position')
+    # ax.plot(time, velocity, 'r--', label='Velocity')
+    # ax.plot(time, acceleration, 'g', label='Acceleration * 10^3')
+    # ax.legend(['Posición', 'Velocidad', 'Aceleración * 10^3'])
+    # plt.ylabel('metros')
+    # plt.show()                           # Show the figure.
+    #
     time, position, velocity, acceleration = runge_kutta_iv(50)
-    ax.plot(time, position, 'b', label='Position')
-    ax.plot(time, velocity, 'r--', label='Velocity')
-    ax.plot(time, acceleration, 'g', label='Acceleration * 10^3')
-    ax.legend(['Posición', 'Velocidad', 'Aceleración * 10^3'])
-    plt.ylabel('metros')
+    print(f"Long soga: {L0}")
+
+    fig, axs = plt.subplots(3, 1, figsize=(8, 8), sharex=True)
+
+    axs[0].plot(time, position, 'b', label='Posición [m]')
+    axs[0].set_ylabel("Posición [m]")
+
+    axs[1].plot(time, list(map(lambda x: (x * 3600)/1000,velocity)), 'r--', label='Velocidad [Km/h]')
+    axs[1].set_ylabel("Velocidad [Km/h]")
+
+    axs[2].plot(time, list(map(lambda x: x / G,acceleration)), 'g', label='Aceleración [g]')
+    axs[2].set_ylabel("Aceleración [g]")
+    axs[2].set_xlabel("Time [s]")
+
     plt.show()                           # Show the figure.
 
 
