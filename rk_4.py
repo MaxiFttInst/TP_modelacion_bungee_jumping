@@ -3,14 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import find_peaks
-
-NP = 111687
-H = 150
-G = 9.82
-L0 = (0.1 / 10000 * (NP - 100000) + 0.25) * H 
-K1 = 10 / 10000 * (NP - 100000) + 40
-K2 = 1
-M = 40 / 10000 * (NP - 100000) + 50 
+from settings import *
 
 def runge_kutta_iv(t_target):
     h = 1 
