@@ -5,8 +5,36 @@ import numpy as np
 from scipy.signal import find_peaks
 from settings import *
 
-def runge_kutta_iv(t_target):
-    h = 0.1 
+def h_optimo():
+    relative_error = 1
+    h = 3
+    peaks = 1
+    while relative_error > 0.01 or peaks != 4:
+        time, position, velocity, acceleration = runge_kutta_iv(50, h)
+        time = np.array(time)
+        position = np.array(position)
+        velocity = np.array(velocity)
+        acceleration = np.array(acceleration)
+        position_peaks, _ = find_peaks(position)
+        peak = max(list(position[position_peaks]))
+        peaks = len(list(position[position_peaks]))
+
+        theorical_peak = L0 + (2*M*G)/(2*K1) + np.sqrt((2*M*G*L0)/K1 + ((M*G)/K1)**2)
+        relative_error  = abs(peak-theorical_peak)/theorical_peak
+        print(f"h: {h}")
+        print(f"L0: {L0}")
+        print(f"H: {H}")
+        print(f"M: {M}")
+        print(f"G: {G}")
+        print(f"K1: {K1}")
+        print(f"Cantidad de picos: {peaks}")
+        print(f"máximo teórico: {theorical_peak}")
+        print(f"máximo práctico: {peak}")
+        print(f"Erorr relativo: {relative_error}")
+        h -= 0.0001
+    return h
+
+def runge_kutta_iv(t_target, h):
     steps = int(t_target/h)
 
     t = [0.0 for _ in range(steps + 1)]
@@ -93,23 +121,26 @@ def main():
     # plt.ylabel('metros')
     # plt.show()                           # Show the figure.
     #
-    time, position, velocity, acceleration = runge_kutta_iv(50)
+    time, position, velocity, acceleration = runge_kutta_iv(50,h=0.6833999999980349)
     time = np.array(time)
     position = np.array(position)
     velocity = np.array(velocity)
     acceleration = np.array(acceleration)
     position_peaks, _ = find_peaks(position)
-    peak = position[position_peaks[0]]
+    peak = max(list(position[position_peaks]))
+    peaks = len(list(position[position_peaks]))
 
     theorical_peak = L0 + (2*M*G)/(2*K1) + np.sqrt((2*M*G*L0)/K1 + ((M*G)/K1)**2)
+    relative_error  = abs(peak-theorical_peak)/theorical_peak
     print(f"L0: {L0}")
     print(f"H: {H}")
     print(f"M: {M}")
     print(f"G: {G}")
     print(f"K1: {K1}")
+    print(f"Cantidad de picos: {peaks}")
     print(f"máximo teórico: {theorical_peak}")
     print(f"máximo práctico: {peak}")
-    print(f"Erorr relativo: {abs(peak-theorical_peak)/theorical_peak}")
+    print(f"Erorr relativo: {relative_error}")
 
     fig, axs = plt.subplots(3, 1, figsize=(8, 8), sharex=True)
 
