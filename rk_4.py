@@ -6,7 +6,7 @@ from scipy.signal import find_peaks
 from settings import *
 
 def runge_kutta_iv(t_target):
-    h = 1 
+    h = 0.1 
     steps = int(t_target/h)
 
     t = [0.0 for _ in range(steps + 1)]
@@ -45,20 +45,23 @@ def runge_kutta_iv(t_target):
     for n in range(1,steps):
         if u[n] > L0:
             q1u[n] = h * v[n]
-
-            q1v[n] = h * (G - (K1*pow(u[n] - L0, K2))/M)
+            stretch = max(u[n] - L0, 0)
+            q1v[n] = h * (G - (K1*stretch**K2)/M)
 
             q2u[n] = h * (v[n] + q1v[n]/2)
 
-            q2v[n] = h * (G - (K1*pow(u[n] + q1u[n]/2 - L0, K2))/M)
+            stretch = max(u[n] + q1u[n]/2 - L0, 0)
+            q2v[n] = h * (G - (K1*stretch**K2)/M)
 
             q3u[n] = h * (v[n] + q2v[n]/2)
 
-            q3v[n] = h * (G - (K1*pow(u[n] + q2u[n]/2 - L0, K2))/M)
+            stretch = max(u[n] + q2u[n]/2 - L0, 0)
+            q3v[n] = h * (G - (K1*stretch**K2)/M)
 
             q4u[n] = h * (v[n] + q3v[n])
 
-            q4v[n] = h * (G - (K1*pow(u[n] + q3u[n] - L0, K2))/M)
+            stretch = max(u[n] + q3u[n] - L0, 0)
+            q4v[n] = h * (G - (K1*stretch**K2)/M)
             a = G - (K1 * (u[n] - L0)**K2) / M
         else:
             q1v[n] = h * G
@@ -120,7 +123,7 @@ def main():
 
     axs[2].plot(time, list(map(lambda x: x / G,acceleration)), 'g', label='Aceleración [g]')
     axs[2].set_ylabel("Aceleración [g]")
-    axs[2].set_xlabel("Time [s]")
+    axs[2].set_xlabel("Tiempo [s]")
 
     plt.show()                           # Show the figure.
 
