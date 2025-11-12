@@ -11,10 +11,6 @@ def h_optimo():
     peaks = 1
     while relative_error > 0.01 or peaks != 4:
         time, position, velocity, acceleration = runge_kutta_iv(50, h)
-        time = np.array(time)
-        position = np.array(position)
-        velocity = np.array(velocity)
-        acceleration = np.array(acceleration)
         position_peaks, _ = find_peaks(position)
         peak = max(list(position[position_peaks]))
         peaks = len(list(position[position_peaks]))
@@ -108,7 +104,9 @@ def runge_kutta_iv(t_target, h):
         v_d[n] = a
         t[n + 1] = t[n] + h
 
-    return t, u, v, v_d
+    y = u # posición
+    a = v_d # aceleración
+    return np.array(t), np.array(y), np.array(v), np.array(a)
 
             
 def main():
@@ -122,10 +120,6 @@ def main():
     # plt.show()                           # Show the figure.
     #
     time, position, velocity, acceleration = runge_kutta_iv(50,h=0.6833999999980349)
-    time = np.array(time)
-    position = np.array(position)
-    velocity = np.array(velocity)
-    acceleration = np.array(acceleration)
     position_peaks, _ = find_peaks(position)
     peak = max(list(position[position_peaks]))
     peaks = len(list(position[position_peaks]))
