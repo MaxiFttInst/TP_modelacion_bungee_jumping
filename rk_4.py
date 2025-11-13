@@ -82,7 +82,7 @@ def runge_kutta_iv(t_target, h):
 
     return t, u, v, a
 
-def main():
+def punto_6():
     ## TODAS LAS METRICAS USADAS EN METROS
     # time, position, velocity, acceleration = runge_kutta_iv(50)
     # ax.plot(time, position, 'b', label='Position')
@@ -92,6 +92,47 @@ def main():
     # plt.ylabel('metros')
     # plt.show()                           # Show the figure.
     #
+    time, position, velocity, acceleration = runge_kutta_iv(60,h=0.35622478902624444)
+    # position_peaks, _ = find_peaks(position)
+    peak = max(position)
+
+    theorical_peak = L0 + (2*M*G)/(2*K1) + np.sqrt((2*M*G*L0)/K1 + ((M*G)/K1)**2)
+    relative_error  = abs(peak-theorical_peak)/theorical_peak
+    print(f"L0: {L0}")
+    print(f"H: {H}")
+    print(f"M: {M}")
+    print(f"G: {G}")
+    print(f"K1: {K1}")
+    print(f"máximo teórico: {theorical_peak}")
+    print(f"máximo práctico: {peak}")
+    print(f"Erorr relativo: {relative_error}")
+
+    fig, axs = plt.subplots(3, 1, figsize=(8, 8), sharex=True)
+
+    axs[0].plot(time, position, 'b', label='Posición [m]')
+    # axs[0].scatter(time[position_peaks], position[position_peaks],
+    #                color='green', marker='^', label='Picos')
+
+    axs[0].axhline(y=135, color='green', linestyle='--', linewidth=2,
+            label=f'Caída al 90%', alpha=0.7)
+    axs[0].axhline(y=150, color='red', linestyle='--', linewidth=2,
+            label=f'Caída al 100%', alpha=0.7)
+    axs[0].legend(fontsize=9)
+    axs[0].set_ylabel("Posición [m]")
+
+    axs[1].plot(time, list(map(lambda x: x * 3.6, velocity)), 'r', label='Velocidad [Km/h]')
+    axs[1].set_ylabel("Velocidad [km/h]")
+
+    axs[2].plot(time, list(map(lambda x: x / G,acceleration)), 'g', label='Aceleración [g]')
+    axs[2].axhline(y=-2.5, color='red', linestyle='--', linewidth=2,
+            label=f'Límite de fuerza G (-2.5G)', alpha=0.7)
+    axs[2].set_ylabel("Aceleración [g]")
+    axs[2].legend(fontsize=9)
+    axs[2].set_xlabel("Tiempo [s]")
+    plt.savefig('rk4_punto_6.png', dpi=300, bbox_inches='tight')
+    plt.show()                           # Show the figure.
+
+def pos_velocidad_rk_4():
     time, position, velocity, acceleration = runge_kutta_iv(6.7,h=0.5455594781168515)
     # position_peaks, _ = find_peaks(position)
     peak = max(position)
@@ -127,16 +168,14 @@ def main():
     plt.savefig('rk4_trayectoria.png', dpi=300, bbox_inches='tight')
     plt.show()                           # Show the figure.
 
-
 if __name__ == "__main__":
-    main()
-    h_values, error_values =  h_optimo()
-    error_values = np.array(error_values)
-    mask = error_values <= 0.1
-    h_filtered = h_values[mask]
-    error_filtered = error_values[mask]
+    punto_6()
+    # h_values, error_values =  h_optimo()
+    # error_values = np.array(error_values)
+    # mask = error_values <= 0.1
+    # h_filtered = h_values[mask]
+    # error_filtered = error_values[mask]
 
-    # Podés devolver ambos (filtrados y originales si querés)
-    print(h_filtered[-1], error_filtered[-1])
+    # print(h_filtered[-1], error_filtered[-1])
 
     # grafico_error_vs_h()
