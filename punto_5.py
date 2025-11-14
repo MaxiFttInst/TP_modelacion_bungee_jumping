@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from euler import euler_bungee
-from rk4 import rk4_bungee
+from rk_4 import runge_kutta_iv
 from analitico import solucion_analitica
 from settings import *
 
@@ -46,11 +46,10 @@ print("Ejecutando simulaciones...")
 t_euler, y_euler, v_euler, _ = euler_bungee(h_euler, t_max=50, detectar_primer_maximo=False)
 
 # RK4 (sin detectar primer máximo)
-t_rk4, y_rk4, v_rk4, _ = rk4_bungee(h_rk4, t_max=50, detectar_primer_maximo=False)
+t_rk4, y_rk4, v_rk4, a_rk4 = runge_kutta_iv(h_rk4, t_max=50)
 
 # Calcular aceleraciones
 a_euler = np.array([G if y <= L0 else G - (K1/M)*(y - L0) for y in y_euler])
-a_rk4 = np.array([G if y <= L0 else G - (K1/M)*(y - L0) for y in y_rk4])
 
 # Solución analítica
 t_analitico = np.linspace(0, min(t_euler[-1], t_rk4[-1]), 5000)

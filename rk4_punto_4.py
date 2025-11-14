@@ -45,7 +45,7 @@ if __name__ == "__main__":
     
     errors = []
     for h in h_values:
-        _, position, _, _ = runge_kutta_iv(20, h)
+        _, position, _, _ = runge_kutta_iv(h)
         y_max_num = np.max(position)
         error = abs(y_max_num - y_max_analitico) / y_max_analitico * 100
         errors.append(error)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     error_optimo = None
     
     for h in h_candidatos:
-        _, position, _, _ = runge_kutta_iv(20,h)
+        _, position, _, _ = runge_kutta_iv(h)
         y_max_num = np.max(position)
         error = abs(y_max_num - y_max_analitico) / y_max_analitico * 100
         
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     # ========================================================================
     
     if h_optimo:
-        t, y, v, _ = runge_kutta_iv(7,h_optimo)
+        t, y, v, _ = runge_kutta_iv(h_optimo, t_max=7)
         y_max = np.max(y)
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
         

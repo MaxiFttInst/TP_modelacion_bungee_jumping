@@ -45,9 +45,9 @@ def h_optimo():
         error_values.append(error)
     return h_values, error_values
 
-def runge_kutta_iv(t_target, h):
-    steps = int(t_target / h)
-    t = np.linspace(0, t_target, steps + 1)
+def runge_kutta_iv(h, t_max=20):
+    steps = int(t_max / h)
+    t = np.linspace(0, t_max, steps + 1)
     u = np.zeros(steps + 1)
     v = np.zeros(steps + 1)
     a = np.zeros(steps + 1)
