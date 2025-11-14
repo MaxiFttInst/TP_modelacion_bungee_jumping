@@ -223,7 +223,7 @@ if __name__ == "__main__":
 
     if h_optimo:
         print(f"\nGenerando trayectoria con h óptimo = {h_optimo:.6f} s...")
-        t_opt, y_opt, v_opt, y_max_num = euler_bungee(h_optimo, L0, K1, M, G, t_max=15)
+        t_opt, y_opt, v_opt, y_max_num = euler_bungee(h_optimo, t_max=15)
         
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
         
