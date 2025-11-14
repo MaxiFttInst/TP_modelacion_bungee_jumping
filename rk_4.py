@@ -44,6 +44,7 @@ def h_optimo():
         error = 100 * abs(max_y - theorical_peak) / theorical_peak
         error_values.append(error)
     return h_values, error_values
+
 def runge_kutta_iv(t_target, h):
     steps = int(t_target / h)
     t = np.linspace(0, t_target, steps + 1)

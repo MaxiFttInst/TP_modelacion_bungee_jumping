@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from settings import *
+from rk_4 import runge_kutta_iv
 
 # ============================================================================
 # VALOR ANALÍTICO DEL PUNTO MÁS BAJO
@@ -8,75 +9,6 @@ from settings import *
 
 mg_k1 = M * G / K1
 y_max_analitico = L0 + mg_k1 + np.sqrt(mg_k1**2 + 2*M*G*L0/K1)
-
-# ============================================================================
-# FUNCIONES
-# ============================================================================
-
-def aceleracion(y):
-    """Calcula la aceleración según la posición."""
-    if y <= L0:
-        return G
-    else:
-        return G - (K1/M) * (y - L0)
-
-def rk4_bungee(h, t_max=20, detectar_primer_maximo=True):
-    """
-    Método RK4 para resolver el problema de bungee jumping.
-    
-    Parámetros:
-    - h: paso temporal
-    - t_max: tiempo máximo de simulación
-    - detectar_primer_maximo: si True, termina al detectar el primer máximo de y
-    
-    Devuelve:
-    - t_array, y_array, v_array, y_max
-    """
-    t = 0.0
-    y = 0.0
-    v = 0.0
-    
-    t_list = [t]
-    y_list = [y]
-    v_list = [v]
-    
-    y_max = 0.0
-    v_anterior = 0.0
-    
-    while t < t_max:
-        # Coeficientes RK4
-        k1_y = v
-        k1_v = aceleracion(y)
-        
-        k2_y = v + 0.5 * h * k1_v
-        k2_v = aceleracion(y + 0.5 * h * k1_y)
-        
-        k3_y = v + 0.5 * h * k2_v
-        k3_v = aceleracion(y + 0.5 * h * k2_y)
-        
-        k4_y = v + h * k3_v
-        k4_v = aceleracion(y + h * k3_y)
-        
-        # Actualización
-        y = y + (h/6.0) * (k1_y + 2*k2_y + 2*k3_y + k4_y)
-        v = v + (h/6.0) * (k1_v + 2*k2_v + 2*k3_v + k4_v)
-        t = t + h
-        
-        t_list.append(t)
-        y_list.append(y)
-        v_list.append(v)
-        
-        # Detectar el punto más bajo
-        if detectar_primer_maximo and v_anterior > 0 and v < 0:
-            y_max = max(y_list[-2], y)
-            break
-        
-        if y > y_max:
-            y_max = y
-        
-        v_anterior = v
-    
-    return np.array(t_list), np.array(y_list), np.array(v_list), y_max
 
 # ============================================================================
 # MAIN
@@ -113,7 +45,8 @@ if __name__ == "__main__":
     
     errors = []
     for h in h_values:
-        _, _, _, y_max_num = rk4_bungee(h)
+        _, position, _, _ = runge_kutta_iv(20, h)
+        y_max_num = np.max(position)
         error = abs(y_max_num - y_max_analitico) / y_max_analitico * 100
         errors.append(error)
         
@@ -159,7 +92,8 @@ if __name__ == "__main__":
     error_optimo = None
     
     for h in h_candidatos:
-        _, _, _, y_max_num = rk4_bungee(h)
+        _, position, _, _ = runge_kutta_iv(20,h)
+        y_max_num = np.max(position)
         error = abs(y_max_num - y_max_analitico) / y_max_analitico * 100
         
         cumple = error <= 0.1
@@ -238,8 +172,8 @@ if __name__ == "__main__":
     # ========================================================================
     
     if h_optimo:
-        t, y, v, y_max = rk4_bungee(h_optimo, t_max=15)
-        
+        t, y, v, _ = runge_kutta_iv(7,h_optimo)
+        y_max = np.max(y)
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))
         
         # Posición

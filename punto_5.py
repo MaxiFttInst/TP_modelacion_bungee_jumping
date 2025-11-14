@@ -43,10 +43,10 @@ y_max_analitico = L0 + mg_k1 + np.sqrt(mg_k1**2 + 2*M*G*L0/K1)
 print("Ejecutando simulaciones...")
 
 # Euler (sin detectar primer máximo)
-t_euler, y_euler, v_euler, _ = euler_bungee(h_euler, t_max=30, detectar_primer_maximo=False)
+t_euler, y_euler, v_euler, _ = euler_bungee(h_euler, t_max=50, detectar_primer_maximo=False)
 
 # RK4 (sin detectar primer máximo)
-t_rk4, y_rk4, v_rk4, _ = rk4_bungee(h_rk4, t_max=30, detectar_primer_maximo=False)
+t_rk4, y_rk4, v_rk4, _ = rk4_bungee(h_rk4, t_max=50, detectar_primer_maximo=False)
 
 # Calcular aceleraciones
 a_euler = np.array([G if y <= L0 else G - (K1/M)*(y - L0) for y in y_euler])
