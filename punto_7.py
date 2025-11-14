@@ -48,18 +48,9 @@ def runge_kutta_iv(t_target, h):
     return t, u, v, a
 
 def punto_7():
-    ## TODAS LAS METRICAS USADAS EN METROS
-    # time, position, velocity, acceleration = runge_kutta_iv(50)
-    # ax.plot(time, position, 'b', label='Position')
-    # ax.plot(time, velocity, 'r--', label='Velocity')
-    # ax.plot(time, acceleration, 'g', label='Acceleration * 10^3')
-    # ax.legend(['Posición', 'Velocidad', 'Aceleración * 10^3'])
-    # plt.ylabel('metros')
-    # plt.show()                           # Show the figure.
-    #
+    # Configurar en settings los valores provistos en el informe
     time, position, velocity, acceleration = runge_kutta_iv(60,h=0.01)
-    # position_peaks, _ = find_peaks(position)
-    peak = max(position)
+    peak = np.max(position)
 
     theorical_peak = L0 + (2*M*G)/(2*K1) + np.sqrt((2*M*G*L0)/K1 + ((M*G)/K1)**2)
     relative_error  = abs(peak-theorical_peak)/theorical_peak

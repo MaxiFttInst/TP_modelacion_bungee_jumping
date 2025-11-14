@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from euler import euler_bungee
+from euler_punto_3 import euler_bungee
 from rk_4 import runge_kutta_iv
 from analitico import solucion_analitica
 from settings import *
